@@ -1,24 +1,64 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'"> -->
-    <script src="./node_modules/moment/moment.js" ></script>
-    <link href="./styles.css" rel="stylesheet">
-    <webview src="http://www.google.com/" nodeintegration></webview>
-
-    <title>Hello World!</title>
+<!-- saved from url=(0028)https://vyytx.github.io/tdl/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="description" content="jQuery - Todo">
+	
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+    <script src="./otherfiles/jquery.js"></script>
+    <link href="./otherfiles/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <script src="./otherfiles/bootstrap.min.js"></script>
+    <script src="./otherfiles/fdb.js"></script>
+    <link rel="stylesheet" href="styles.css">
   </head>
-  <body>
-
-    <h1>Hello World!</h1>
+  <body style="display: block;">
+	<section id="todoapp">
+	  <header>
+		<h1>Todos</h1>
+		<div><btn1 class="btn btn-success">GO!</btn1></div>
+		<input id="new-todo" placeholder="Need 2 do?" autofocus="">
+	  </header>
+      
+      <section id="main">
+        <input id="toggle-all" type="checkbox">
+        <ul id="todo-list">
+        </ul>
+      </section>
+      
+	  <footer>
+	    <span id="todo-count"><strong>0</strong> left</span>
+			<ul id="filters">
+				<li>
+					<a class="selected" data-choice="all">All</a>
+				</li>
+				<li>
+					<a data-choice="active">Active</a>
+				</li>
+				<li>
+					<a data-choice="completed">Comp</a>
+				</li>
+			</ul>
+			<button id="clear-completed">Clear comp</button>
+	  </footer>
+	</section>
     
-    <hr>
-    <div class="now-time" id="ABC">456</div>
-    <input type="text" class="alarm-time">
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog" style="display: none;">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+          </div>
+          <div class="modal-body">
+            <p1></p1>
+            <input id="ip" type="text" class="form-control" aria-describedby="basic-addon3">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Success</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+<script src="app.js"></script>
 
-    <script src="./app.js" type="module"></script>
-    <!-- <script src="./renderer.js"></script> -->
-  </body>
-</html>
+</body></html>
