@@ -1,10 +1,22 @@
 {
   "name": "simple-todo-list",
-  "version": "0.1-indev",
+  "version": "0.0.1-indev",
   "description": "A simple Electron-based todo-list.",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "your.id",
+    "mac": {
+      "category": "your.app.category.type",
+      "icon": "icon.png"
+    },
+    "win": {
+      "icon": "icon.png"
+    }
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [
