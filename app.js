@@ -7,25 +7,25 @@ $('#myModal').hide();
 var loadDate = new Date();
 var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 for(let i=0; i<10;i++){
-  $("#year").append('<option value='+(loadDate.getFullYear()+i)+'>'+(loadDate.getFullYear()+i)+"</option>");
+  $("#year, #year1").append('<option value='+(loadDate.getFullYear()+i)+'>'+(loadDate.getFullYear()+i)+"</option>");
 }
 for(let i=0; i<12; i++){
-  $("#month").append('<option value='+i+'>'+month[i]+'</option>');
+  $("#month, #month1").append('<option value='+i+'>'+month[i]+'</option>');
 }
 for(let i=0; i<24; i++){
-  $("#hour").append('<option value='+i+'>'+i+'</option>');
+  $("#hour, #hour1").append('<option value='+i+'>'+i+'</option>');
 }
 for(let i=0; i<60; i++){
-  $("#minute").append('<option value='+i+'>'+i+'</option>');
+  $("#minute, #minute1").append('<option value='+i+'>'+i+'</option>');
 }
 
 
 
-tdCollection.load(function(){
+tdCollection.load(function(){//TODO:Expired item won't change to "expire style" until reload the page
 if(tdCollection.find().length != 0){
   for(var i = 0; i < tdCollection.find().length; i++){
     var td = tdCollection.find();
-    $('#todo-list').append(template(td[i].val, td[i].com, td[i]._id));
+    $('#todo-list').append(template(td[i].val, td[i].com, td[i]._id,td[i].dl));
     tdCollection.save();
     var tg = $('.toggle').get(i);
     if(!$(tg).prop("checked")){
@@ -41,11 +41,20 @@ if(tdCollection.find().length != 0){
   $('body').show();
   var ENTER_KEY = 13;
   
-  function template(val, com, id){//TODO: modify the template to show deadline
-    if(com){
-      return '<li class="completed" data-id=' + id + '><div class="view"><input class="toggle" type="checkbox" checked=true><label>' + val + '</label><btn class="btn btn-info">edit</btn><button class="destroy"></button></div></li>';
-    }else{
-      return '<li data-id=' + id + '><div class="view div"><input class="toggle" type="checkbox"><label>' + val + '</label><btn class="btn btn-info">edit</btn><button class="destroy"></button></div></li>';
+  function template(val, com, id, dl){//TODO: modify the template to show deadline
+    if(com){//completed
+      return '<li class="completed" data-id=' + id + '><div class="view"><input class="toggle" type="checkbox" checked=true><label>' + val + '</label>'+'<b class="time">'+'expires at: '+((dl == "false")?("None"):(dl))+'</b><btn class="btn btn-info">edit</btn><button class="destroy"></button></div></li>';
+    }else if(dl != "false"){
+      let nowTime = new Date();
+      let deadLine = new Date(dl);
+      if (nowTime-deadLine > 0){//expired
+        return '<li class="expired" data-id=' + id + '><div class="view div"><input class="toggle" type="checkbox"><label>' + val + '</label>'+'<b class="time">'+'expires at: '+((dl == "false")?("None"):(dl))+'</b>'+'<btn class="btn btn-info">edit</btn><button class="destroy"></button></div></li>'
+      }else{//not expired
+        return '<li data-id=' + id + '><div class="view div"><input class="toggle" type="checkbox"><label>' + val + '</label>'+'<b class="time">'+'expires at: '+((dl == "false")?("None"):(dl))+'</b><btn class="btn btn-info">edit</btn><button class="destroy"></button></div></li>';
+      }
+      
+    }else{//no deadline
+      return '<li data-id=' + id + '><div class="view div"><input class="toggle" type="checkbox"><label>' + val + '</label>'+'<b class="time">'+'expires at: '+((dl == "false")?("None"):(dl))+'</b><btn class="btn btn-info">edit</btn><button class="destroy"></button></div></li>'
     }
   }
 
@@ -59,17 +68,33 @@ if(tdCollection.find().length != 0){
 	  }
   }
 
-  $('#new-todo').on('keydown', function(e){
+  $('#new-todo').on('keydown', function(e){//輸入一
     if (e.which == ENTER_KEY){
-      var val = $(this).val();
+      let val = $(this).val();
+      let nowDate = new Date();
+      let deadLine
+      if(Number($("#year").val()) != -1 && Number($("#month").val()) != -1 && Number($("#date").val()) != -1 && Number($("#hour").val()) != -1 && Number($("#minute").val()) != -1){
+        deadLine = new Date(Number($("#year").val()), Number($("#month").val()), Number($("#date").val()), Number($("#hour").val()), Number($("#minute").val()),0);
+      }else{
+        deadLine = false; // without expire date
+      }
+      if(val == ""){
+        alert("Please enter a event title!");
+        return;
+      }
+      if (typeof deadLine != "boolean" && nowDate-deadLine > 0){
+        alert("Wrong input: Deadline time is before current time.");
+        return;
+      }
+
       var filter0 = /.+/;
       var filter1 = true;
       if(val[0] == " " || val[val.length-1] == " "){
         filter1 = false;
       }
       if(filter0.test(val) && filter1){
-		tdCollection.insert({val:val,com:false});
-        $('#todo-list').append(template(val,false,tdCollection.find()[tdCollection.find().length-1]._id));
+		    tdCollection.insert({val:val, com:false, dl: deadLine.toString()});
+        $('#todo-list').append(template(val, false, tdCollection.find()[tdCollection.find().length-1]._id, deadLine.toString()));
         tdCollection.save();
         $(this).val('');
         count();
@@ -91,16 +116,37 @@ if(tdCollection.find().length != 0){
       }
     }
   });
+
+  $("#date1").on("click", function(){
+    let nextMonth = Number($("#month1").val())+1;
+    let thisYear = Number($("#year1").val());
+    $("#date1 option").remove();
+    $("#date1").append('<option value="-1" >Date</option>');
+    if(nextMonth == 0){
+      return;
+    }else{
+      let maxDate = new Date(thisYear, nextMonth, 0);
+      for (let i=1; i<=maxDate.getDate();i++){
+        $("#date1").append('<option value='+i+'>'+i+'</option>');
+      }
+    }
+  });
 	
-  $('btn1').on('click', function(){
-      var val = $('#new-todo').val();
+  $('btn1').on('click', function(){//輸入一
+    //TODO: for unknown reason, if you edit something when it's completed, the font won't change to normal until reload the page
+      let val = $('#new-todo').val();
       let nowDate = new Date();
-      var deadLine = new Date(Number($("#year").val()), Number($("#month").val()), Number($("#date").val()), Number($("#hour").val()), Number($("#minute").val()),0)
+      let deadLine;
+      if(Number($("#year").val()) != -1 && Number($("#month").val()) != -1 && Number($("#date").val()) != -1 && Number($("#hour").val()) != -1 && Number($("#minute").val()) != -1){
+        deadLine = new Date(Number($("#year").val()), Number($("#month").val()), Number($("#date").val()), Number($("#hour").val()), Number($("#minute").val()),0);
+      }else{
+        deadLine = false; // without expire date
+      }
       if(val == ""){
         alert("Please enter a event title!");
         return;
       }
-      if (nowDate-deadLine > 0){
+      if (typeof deadLine != "boolean" && nowDate-deadLine > 0){
         alert("Wrong input: Deadline time is before current time.");
         return;
       }
@@ -110,15 +156,15 @@ if(tdCollection.find().length != 0){
         filter1 = false;
       }
       if(filter0.test(val) && filter1){
-        tdCollection.insert({val:val,com:false});
-        $('#todo-list').append(template(val,false,tdCollection.find()[tdCollection.find().length-1]._id));
+        tdCollection.insert({val:val, com:false, dl: deadLine.toString()});
+        $('#todo-list').append(template(val, false, tdCollection.find()[tdCollection.find().length-1]._id, deadLine.toString()));
         tdCollection.save();
         $('#new-todo').val('');
         count();
       }
   });
 
-  $('#todo-list').on('click', 'button', function(){
+  $('#todo-list').on('click', 'button', function(){//delete
     $(this).closest('li').remove();
     var id = jQuery(this).closest('li').data('id');
     tdCollection.removeById(id);
@@ -126,7 +172,7 @@ if(tdCollection.find().length != 0){
     count();
   });
 
-  $('#todo-list').on('click', 'input', function(){
+  $('#todo-list').on('click', 'input', function(){//complete
     $(this).closest('li').toggleClass('completed');
     var li = $(this).closest('li');
     var la = $(this).closest('lable');
@@ -180,6 +226,7 @@ if(tdCollection.find().length != 0){
   });
 
   $('#filters').on('click', 'a', function(){
+    //TODO: checked item won't disappear immediately
     var $this = $(this);
     var todos = $('#todo-list li');
   
@@ -206,7 +253,7 @@ if(tdCollection.find().length != 0){
     li.find('input').click();
   });
   
-  $('body').on('click', 'btn', function(){
+  $('body').on('click', 'btn', function(){//edit
     var li = $(this).closest('li');
     var id = jQuery(this).closest('li').data('id');
     li.addClass('on');
@@ -215,20 +262,36 @@ if(tdCollection.find().length != 0){
     $('#myModal').modal();
   });
   
-  $('.btn-primary').click(function(){
-    var id = $('p').data("id");
-    tdCollection.updateById(id, {_id: id, val:$('#ip').val()});
-    if(tdCollection.findById(id,undefined).com){
-      $('.on').html('<div class="view"><input class="toggle" type="checkbox" checked=true><label>' + $('#ip').val() + '</label><btn class="btn btn-info">edit</btn><button class="destroy"></button></div>');
+  $('.btn-primary').click(function(){//TODO:edit "save"
+    let id = $('p').data("id");
+    let val = $('#ip').val()
+    let deadLine;
+    let nowDate = new Date()
+    if(Number($("#year1").val()) != -1 && Number($("#month1").val()) != -1 && Number($("#date1").val()) != -1 && Number($("#hour1").val()) != -1 && Number($("#minute1").val()) != -1){
+      deadLine = new Date(Number($("#year1").val()), Number($("#month1").val()), Number($("#date1").val()), Number($("#hour1").val()), Number($("#minute1").val()),0);
     }else{
-      $('.on').html('<div class="view div"><input class="toggle" type="checkbox"><label>' + $('#ip').val() + '</label><btn class="btn btn-info">edit</btn><button class="destroy"></button></div>');
+      deadLine = false; // without expire date
+    }
+    if(val == ""){
+      alert("Please enter a event title!");
+      return;
+    }
+    if (typeof deadLine != "boolean" && nowDate-deadLine > 0){
+      alert("Wrong input: Deadline time is before current time.");
+      return;
+    }
+    tdCollection.updateById(id, {_id: id, val:val, dl:deadLine.toString()});
+    if(tdCollection.findById(id,undefined).com){
+      $('.on').html(template(val, true, tdCollection.find()[tdCollection.find().length-1]._id, deadLine.toString()));
+    }else{
+      $('.on').html(template(val, false, tdCollection.find()[tdCollection.find().length-1]._id, deadLine.toString()));
     }
     $('.on').removeClass('on');
     $('#ip').val('');
     tdCollection.save();
   });
   
-  $('.btn-default').click(function(){
+  $('.btn-default').click(function(){//turn off modal "cancel"
     $('.on').removeClass('on');
     $('#ip').val('');
   });
