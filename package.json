@@ -1,6 +1,6 @@
 {
   "name": "simple-todo-list",
-  "version": "0.0.2-indev",
+  "version": "0.0.3-indev",
   "description": "A simple Electron-based todo-list.",
   "main": "main.js",
   "scripts": {
@@ -34,6 +34,7 @@
     "electron-packager": "^15.4.0"
   },
   "dependencies": {
+    "lowdb": "^3.0.0",
     "moment": "^2.29.1"
   }
 }

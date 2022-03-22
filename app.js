@@ -1,10 +1,25 @@
-
 var fdb = new ForerunnerDB();
 var db = fdb.db("DB");
 var tdCollection = db.collection("td");
 var iss = true;
 $('body').hide();
 $('#myModal').hide();
+var loadDate = new Date();
+var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+for(let i=0; i<10;i++){
+  $("#year").append('<option value='+(loadDate.getFullYear()+i)+'>'+(loadDate.getFullYear()+i)+"</option>");
+}
+for(let i=0; i<12; i++){
+  $("#month").append('<option value='+i+'>'+month[i]+'</option>');
+}
+for(let i=0; i<24; i++){
+  $("#hour").append('<option value='+i+'>'+i+'</option>');
+}
+for(let i=0; i<60; i++){
+  $("#minute").append('<option value='+i+'>'+i+'</option>');
+}
+
+
 
 tdCollection.load(function(){
 if(tdCollection.find().length != 0){
@@ -26,7 +41,7 @@ if(tdCollection.find().length != 0){
   $('body').show();
   var ENTER_KEY = 13;
   
-  function template(val, com, id){
+  function template(val, com, id){//TODO: modify the template to show deadline
     if(com){
       return '<li class="completed" data-id=' + id + '><div class="view"><input class="toggle" type="checkbox" checked=true><label>' + val + '</label><btn class="btn btn-info">edit</btn><button class="destroy"></button></div></li>';
     }else{
@@ -61,9 +76,34 @@ if(tdCollection.find().length != 0){
       }
     }
   });
+
+  $("#date").on("click", function(){
+    let nextMonth = Number($("#month").val())+1;
+    let thisYear = Number($("#year").val());
+    $("#date option").remove();
+    $("#date").append('<option value="-1" >Date</option>');
+    if(nextMonth == 0){
+      return;
+    }else{
+      let maxDate = new Date(thisYear, nextMonth, 0);
+      for (let i=1; i<=maxDate.getDate();i++){
+        $("#date").append('<option value='+i+'>'+i+'</option>');
+      }
+    }
+  });
 	
   $('btn1').on('click', function(){
       var val = $('#new-todo').val();
+      let nowDate = new Date();
+      var deadLine = new Date(Number($("#year").val()), Number($("#month").val()), Number($("#date").val()), Number($("#hour").val()), Number($("#minute").val()),0)
+      if(val == ""){
+        alert("Please enter a event title!");
+        return;
+      }
+      if (nowDate-deadLine > 0){
+        alert("Wrong input: Deadline time is before current time.");
+        return;
+      }
       var filter0 = /.+/;
       var filter1 = true;
       if(val[0] == " " || val[val.length-1] == " "){
