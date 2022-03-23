@@ -19,23 +19,26 @@ for(let i=0; i<60; i++){
   $("#minute, #minute1").append('<option value='+i+'>'+i+'</option>');
 }
 
+window.ElectionAPI.prepareToClose((event)=>{
 
+});
 
 tdCollection.load(function(){//TODO:Expired item won't change to "expire style" until reload the page
-if(tdCollection.find().length != 0){
-  for(var i = 0; i < tdCollection.find().length; i++){
-    var td = tdCollection.find();
-    $('#todo-list').append(template(td[i].val, td[i].com, td[i]._id,td[i].dl));
-    tdCollection.save();
-    var tg = $('.toggle').get(i);
-    if(!$(tg).prop("checked")){
-    	iss = false;
+  //window.electronAPI.pushToBackend("aaa")
+  if(tdCollection.find().length != 0){
+    for(var i = 0; i < tdCollection.find().length; i++){
+      var td = tdCollection.find();
+      $('#todo-list').append(template(td[i].val, td[i].com, td[i]._id,td[i].dl));
+      tdCollection.save();
+      var tg = $('.toggle').get(i);
+      if(!$(tg).prop("checked")){
+        iss = false;
+      }
     }
+  }else{
+    iss = false;
   }
-}else{
-	iss = false;
-}
-				  
+            
   $('#toggle-all').prop('checked', iss);
 	count();
   $('body').show();
@@ -295,5 +298,5 @@ if(tdCollection.find().length != 0){
     $('.on').removeClass('on');
     $('#ip').val('');
   });
-  
+
 });
