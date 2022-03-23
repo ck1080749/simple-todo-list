@@ -3,9 +3,11 @@ const {app, BrowserWindow, ipcMain} = require('electron')
 const path = require('path')
 const fs = require('fs')
 
-async function loadFile(){
+function loadFile(){
   const d = fs.readFileSync("./event.json","utf-8")
   data = JSON.parse(d)
+  //console.log(data)
+  //return d//TODO: Maybe here's the probem?
   return data
 }
 function createWindow () {
@@ -26,7 +28,7 @@ function createWindow () {
   })
 
   ipcMain.on('fileUpdate', (event, dataList)=>{
-    fs.writeFileSync("./event.json",JSON.stringify(dataList))
+    fs.writeFileSync("./event.json",dataList)
   })
 
   // mainWindow.on('close',(e)=>{
