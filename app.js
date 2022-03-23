@@ -4,10 +4,10 @@ var tdCollection = db.collection("td");
 var iss = true;
 var eventsList = [1,2,3,4,5]
 
-window.electronAPI.prepareToClose((event)=>{
-  event.sender.send('save-file',"abc");
-});
-
+// window.electronAPI.prepareToClose((event)=>{
+//   event.sender.send('save-file',"abc");
+// });
+//window.electronAPI.updateFile(eventsList)
 
 $('body').hide();
 $('#myModal').hide();
@@ -30,7 +30,7 @@ for(let i=0; i<60; i++){
 tdCollection.load(function(){//TODO:Expired item won't change to "expire style" until reload the page
   //window.electronAPI.pushToBackend("aaa")
 
-  if(tdCollection.find().length != 0){
+  if(tdCollection.find().length != 0){//empty is all dataset
     for(var i = 0; i < tdCollection.find().length; i++){
       var td = tdCollection.find();
       $('#todo-list').append(template(td[i].val, td[i].com, td[i]._id,td[i].dl));

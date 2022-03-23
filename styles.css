@@ -7,6 +7,10 @@
     outline: none !important;
 }
 
+select {
+    border: none;
+}
+
 html,
 body,
 button {

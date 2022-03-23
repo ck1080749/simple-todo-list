@@ -2,6 +2,12 @@
 const {app, BrowserWindow, ipcMain} = require('electron')
 const path = require('path')
 const fs = require('fs')
+
+async function loadFile(){
+  const d = fs.readFileSync("./event.json","utf-8")
+  data = JSON.parse(d)
+  return data
+}
 function createWindow () {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -11,15 +17,23 @@ function createWindow () {
       preload: path.join(__dirname, 'preload.js')
     }
   })
+
+  //globalThis['mainWindow'] = mainWindow
   //console.log("a")
+
   ipcMain.on('write-to-console',(event, text)=>{
     console.log(text)
   })
 
-  mainWindow.on('close',(e)=>{
-    console.log("a")
-    mainWindow.webContents.send('onWindowCloseOperation')
+  ipcMain.on('fileUpdate', (event, dataList)=>{
+    fs.writeFileSync("./event.json",JSON.stringify(dataList))
   })
+
+  // mainWindow.on('close',(e)=>{
+  //   e.preventDefault()
+  //   console.log("a")
+  //   mainWindow.webContents.send('onWindowCloseOperation')
+  // })
 
 
   // and load the index.html of the app.
@@ -34,13 +48,14 @@ function createWindow () {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   
-  
+  ipcMain.handle('fileRead', loadFile)
   createWindow()
   
-  ipcMain.on('save-file',(_event, value)=>{
-    console.log([1,2,3,45])
-    console.log(typeof value)
-  })
+  // ipcMain.on('save-file',(_event, value)=>{
+  //   console.log([1,2,3,45])
+  //   console.log(typeof value)
+  //   mainWindow.destroy()
+  // })
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
@@ -53,7 +68,7 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit()
+  //if (process.platform !== 'darwin') app.quit()
 })
 
 // In this file you can include the rest of your app's specific main process
