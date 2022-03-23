@@ -54,7 +54,7 @@
 
   if(todoList.length != 0){
     for(let i=0; i<todoList.length; i++){
-      $('#todo-list').append(template(todoList[i].val, todoList[i].com, todoList[i]._id, todoList[i].dl));
+      $('#todo-list').append(template(todoList[i].val, todoList[i].com, todoList[i].id, todoList[i].dl));
       let tg = $('.toggle').get(i);
       if(!$(tg).prop("checked")){
         iss = false;
@@ -122,8 +122,8 @@
         filter1 = false;
       }
       if(filter0.test(val) && filter1){
-        todoList.push({val:val, com:false, dl: deadLine.toString(), _id: todoList.length});//TODO:what is id for?
-        $('#todo-list').append(template(val, false, todoList[todoList.length-1]._id, deadLine.toString()));
+        todoList.push({val:val, com:false, dl: deadLine.toString(), id: todoList.length});//TODO:what is id for?
+        $('#todo-list').append(template(val, false, todoList[todoList.length-1].id, deadLine.toString()));
         window.electronAPI.updateFile(JSON.stringify(todoList))
         $(this).val('');
         count();
@@ -156,7 +156,7 @@
       }
       if(filter0.test(val) && filter1){
         todoList.push({val:val, com:false, dl: deadLine.toString(), id:todoList.length});
-        $('#todo-list').append(template(val, false, todoList[todoList.length-1]._id, deadLine.toString()));
+        $('#todo-list').append(template(val, false, todoList[todoList.length-1].id, deadLine.toString()));
         window.electronAPI.updateFile(JSON.stringify(todoList))
         $('#new-todo').val('');
         count();
@@ -179,9 +179,9 @@
     //var la = $(this).closest('lable');
     let id = jQuery(this).closest(li).data('id');
     if ( $( this ).is( ":checked" ) ){
-      todoList[Number(id)].com = true;//tdCollection.updateById(id, {_id: id, com:true});
+      todoList[Number(id)].com = true;//tdCollection.updateById(id, {id: id, com:true});
     }else{
-      todoList[Number(id)].com = false;//tdCollection.updateById(id, {_id: id, com:false});
+      todoList[Number(id)].com = false;//tdCollection.updateById(id, {id: id, com:false});
     }
     window.electronAPI.updateFile(JSON.stringify(todoList))//tdCollection.save();
     count();
@@ -208,7 +208,7 @@
       for(let i = 0; i<=todos.find('input').length; i++){
         let elem = $('li').get(i);
         let id = jQuery(elem).data('id');
-        todoList[Number(id)].com = true;//tdCollection.updateById(id, {_id: id, com:true});
+        todoList[Number(id)].com = true;//tdCollection.updateById(id, {id: id, com:true});
         window.electronAPI.updateFile(JSON.stringify(todoList))//tdCollection.save();
       }
       window.electronAPI.updateFile(JSON.stringify(todoList))//tdCollection.save();
@@ -217,8 +217,8 @@
       todos.find('input').prop('checked', false);
       for(let _i = 0; _i<=todos.find('input').length; _i++){
         let _elem = $('li').get(_i);
-        let _id = jQuery(_elem).data('id');
-        todoList[Number(id)].com = true;//tdCollection.updateById(_id, {_id: _id, com:false});
+        let id = jQuery(_elem).data('id');
+        todoList[Number(id)].com = true;//tdCollection.updateById(id, {id: id, com:false});
         window.electronAPI.updateFile(JSON.stringify(todoList))//tdCollection.save();
       }
       window.electronAPI.updateFile(JSON.stringify(todoList))//tdCollection.save();
@@ -263,7 +263,7 @@
     $('#myModal').modal();
   });
 
-  $('.btn-primary').click(function(){//TODO:edit "save"
+  $('.btn-primary').click(function(){//edit "save"
     let id = $('p').data("id");
     let val = $('#ip').val()
     let deadLine;
@@ -282,17 +282,17 @@
       return;
     }
 
-    //tdCollection.updateById(id, {_id: id, val:val, dl:deadLine.toString()});
-    todoList[Number(id)]._id = id;
+    //tdCollection.updateById(id, {id: id, val:val, dl:deadLine.toString()});
+    todoList[Number(id)].id = id;
     todoList[Number(id)].val = val;
-    todoList[Number(id)].dl = deadLine.toString
+    todoList[Number(id)].dl = deadLine.toString()
 
     if(todoList[Number(id)].com){//tdCollection.findById(id,undefined).com
-      //$('.on').html(template(val, true, tdCollection.find()[tdCollection.find().length-1]._id, deadLine.toString()));
-      $('.on').html(template(val, true, todoList[todoList.length-1]._id, deadLine.toString()));
+      //$('.on').html(template(val, true, tdCollection.find()[tdCollection.find().length-1].id, deadLine.toString()));
+      $('.on').html(template(val, true, todoList[todoList.length-1].id, deadLine.toString()));
     }else{
-      //$('.on').html(template(val, false, tdCollection.find()[tdCollection.find().length-1]._id, deadLine.toString()));
-      $('.on').html(template(val, false, todoList[todoList.length-1]._id, deadLine.toString()));
+      //$('.on').html(template(val, false, tdCollection.find()[tdCollection.find().length-1].id, deadLine.toString()));
+      $('.on').html(template(val, false, todoList[todoList.length-1].id, deadLine.toString()));
     }
     $('.on').removeClass('on');
     $('#ip').val('');
@@ -303,4 +303,22 @@
     $('.on').removeClass('on');
     $('#ip').val('');
   });
+  var notified = []
+  timer();
+  function timer(){
+    let time = new Date();
+      todoList.forEach(element => {
+        if(element.dl != 'false' && !element.com && !notified.includes(element.id)){
+          a = new Date()
+          b = new Date(element.dl)
+          if(a-b >= 0){
+            new Notification('Deadline Reached!', { body: 'Item '+ element.val+' has expired.'})
+            notified.push(element.id)
+          }
+        }
+      });
+      setTimeout(() => {
+          timer();
+      }, 1000);
+  }
 })();
