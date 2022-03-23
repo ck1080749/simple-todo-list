@@ -2,6 +2,13 @@ var fdb = new ForerunnerDB();
 var db = fdb.db("DB");
 var tdCollection = db.collection("td");
 var iss = true;
+var eventsList = [1,2,3,4,5]
+
+window.electronAPI.prepareToClose((event)=>{
+  event.sender.send('save-file',"abc");
+});
+
+
 $('body').hide();
 $('#myModal').hide();
 var loadDate = new Date();
@@ -19,12 +26,10 @@ for(let i=0; i<60; i++){
   $("#minute, #minute1").append('<option value='+i+'>'+i+'</option>');
 }
 
-window.ElectionAPI.prepareToClose((event)=>{
-
-});
 
 tdCollection.load(function(){//TODO:Expired item won't change to "expire style" until reload the page
   //window.electronAPI.pushToBackend("aaa")
+
   if(tdCollection.find().length != 0){
     for(var i = 0; i < tdCollection.find().length; i++){
       var td = tdCollection.find();

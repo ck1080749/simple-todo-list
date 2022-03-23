@@ -11,27 +11,36 @@ function createWindow () {
       preload: path.join(__dirname, 'preload.js')
     }
   })
-
+  //console.log("a")
   ipcMain.on('write-to-console',(event, text)=>{
     console.log(text)
   })
 
   mainWindow.on('close',(e)=>{
-    mainWindow.webContents.send('onWindowCloseOperation');
+    console.log("a")
+    mainWindow.webContents.send('onWindowCloseOperation')
   })
+
 
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
 
   // Open the DevTools.
-  //mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  
+  
   createWindow()
+  
+  ipcMain.on('save-file',(_event, value)=>{
+    console.log([1,2,3,45])
+    console.log(typeof value)
+  })
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
