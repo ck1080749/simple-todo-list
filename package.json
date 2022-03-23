@@ -1,15 +1,15 @@
 {
   "name": "simple-todo-list",
-  "version": "0.0.4-indev",
+  "version": "0.0.5-indev",
   "description": "A simple Electron-based todo-list.",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "electron-builder -mwl"
   },
   "build": {
-    "appId": "your.id",
+    "appId": "com.electron.simple-todo-list",
     "mac": {
       "category": "your.app.category.type",
       "icon": "icon.png"
@@ -31,7 +31,9 @@
   "devDependencies": {
     "electron": "^17.1.2",
     "electron-builder": "^22.14.13",
-    "electron-packager": "^15.4.0"
+    "electron-packager": "^15.4.0",
+    "grunt": "^1.4.1",
+    "grunt-electron-installer": "^2.1.0"
   },
   "dependencies": {
     "lowdb": "^3.0.0",
