@@ -46,7 +46,7 @@
   }
 
   //load page
-  var todoList = await window.electronAPI.loadFile() // TODO:Return "Promise". maybe "await/async" is needed but how?
+  var todoList = await window.electronAPI.loadFile()
   // todoList = []
   // var d = window.electronAPI.loadFile() // same here
   // var todoList = JSON.parse(d)
@@ -168,7 +168,7 @@
   $('#todo-list').on('click', 'button', function(){//delete
     $(this).closest('li').remove();
     let id = jQuery(this).closest('li').data('id');
-    todoList.splice(Number(id),1); //tdCollection.removeById(id);
+    todoList.splice(Number(id),1); //TODO:Sometimes Fail to delete item because id-index disagreement
     window.electronAPI.updateFile(JSON.stringify(todoList))  //tdCollection.save();  
     count();
   });
@@ -178,7 +178,7 @@
     let li = $(this).closest('li');
     //var la = $(this).closest('lable');
     let id = jQuery(this).closest(li).data('id');
-    if ( $( this ).is( ":checked" ) ){
+    if ( $( this ).is( ":checked" ) ){//TODO:Sometimes Fail to delete item because id-index disagreement
       todoList[Number(id)].com = true;//tdCollection.updateById(id, {id: id, com:true});
     }else{
       todoList[Number(id)].com = false;//tdCollection.updateById(id, {id: id, com:false});
@@ -228,6 +228,7 @@
 
   $('#filters').on('click', 'a', function(){
     //TODO: checked item won't disappear immediately
+    //TODO: filter for expired items
     var $this = $(this);
     var todos = $('#todo-list li');
 
@@ -244,6 +245,10 @@
     else if ($this.data('choice') == 'completed'){
       todos.hide();
       $('.completed').show();
+    }
+    else if ($this.data('choice') == 'expired'){
+      todos.hide();
+      $('.expired').show();
     }
     count();
   });
