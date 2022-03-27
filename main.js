@@ -3,7 +3,7 @@ const {app, BrowserWindow, ipcMain} = require('electron')
 const path = require('path')
 const fs = require('fs')
 
-function loadFile(){
+async function loadFile(){ //TODO:這樣會有問題嗎
   const d = fs.readFileSync("./event.json","utf-8")
   data = JSON.parse(d)
   //console.log(data)
@@ -42,7 +42,7 @@ function createWindow () {
   mainWindow.loadFile('index.html')
 
   // Open the DevTools.
-  //mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished

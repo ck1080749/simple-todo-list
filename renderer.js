@@ -50,7 +50,10 @@
   // todoList = []
   // var d = window.electronAPI.loadFile() // same here
   // var todoList = JSON.parse(d)
-  console.log(todoList)
+  console.log(todoList);
+  var lastid = 0;
+  if(todoList.length > 0 ) lastid = todoList[todoList.length-1].id + 1;//Last id as identifier
+  console.log(lastid)
 
   if(todoList.length != 0){
     for(let i=0; i<todoList.length; i++){
@@ -122,11 +125,12 @@
         filter1 = false;
       }
       if(filter0.test(val) && filter1){
-        todoList.push({val:val, com:false, dl: deadLine.toString(), id: todoList.length});//TODO:what is id for?
+        todoList.push({val:val, com:false, dl: deadLine.toString(), id: lastid});//TODO:what is id for?
         $('#todo-list').append(template(val, false, todoList[todoList.length-1].id, deadLine.toString()));
         window.electronAPI.updateFile(JSON.stringify(todoList))
         $(this).val('');
         count();
+        lastid++;
       }
     }
   });
@@ -155,33 +159,36 @@
         filter1 = false;
       }
       if(filter0.test(val) && filter1){
-        todoList.push({val:val, com:false, dl: deadLine.toString(), id:todoList.length});
+        todoList.push({val:val, com:false, dl: deadLine.toString(), id:lastid});
         $('#todo-list').append(template(val, false, todoList[todoList.length-1].id, deadLine.toString()));
         window.electronAPI.updateFile(JSON.stringify(todoList))
         $('#new-todo').val('');
         count();
+        lastid++;
       }
   });
 
   //array.prototype.splice(index,1)
   //index: pos of item to remove
   $('#todo-list').on('click', 'button', function(){//delete
+    let id = jQuery(this).closest('li').data('id');    
     $(this).closest('li').remove();
-    let id = jQuery(this).closest('li').data('id');
-    todoList.splice(Number(id),1); //TODO:Sometimes Fail to delete item because id-index disagreement
+    //console.log(id)
+    todoList.splice(todoList.findIndex((element) => element.id == id),1); //TODO:Sometimes Fail to delete item because id-index disagreement
     window.electronAPI.updateFile(JSON.stringify(todoList))  //tdCollection.save();  
     count();
+    if(todoList.length > 0 ) lastid = todoList[todoList.length-1].id + 1;
+    else lastid = 0;
   });
 
   $('#todo-list').on('click', 'input', function(){//complete
     $(this).closest('li').toggleClass('completed');
     let li = $(this).closest('li');
-    //var la = $(this).closest('lable');
     let id = jQuery(this).closest(li).data('id');
     if ( $( this ).is( ":checked" ) ){//TODO:Sometimes Fail to delete item because id-index disagreement
-      todoList[Number(id)].com = true;//tdCollection.updateById(id, {id: id, com:true});
+      todoList[todoList.findIndex((element) => element.id == id)].com = true;//tdCollection.updateById(id, {id: id, com:true});
     }else{
-      todoList[Number(id)].com = false;//tdCollection.updateById(id, {id: id, com:false});
+      todoList[todoList.findIndex((element) => element.id == id)].com = false;//tdCollection.updateById(id, {id: id, com:false});
     }
     window.electronAPI.updateFile(JSON.stringify(todoList))//tdCollection.save();
     count();
@@ -191,7 +198,7 @@
     let time = $('li.completed').length
     for(let i = 0; i<=time; i++){
       let id = jQuery('li.completed').first().data('id');
-      todoList.splice(Number(id),1);//tdCollection.removeById(id);
+      todoList.splice(todoList.findIndex((element) => element.id == id),1);//TODO:tdCollection.removeById(id);
       window.electronAPI.updateFile(JSON.stringify(todoList))//tdCollection.save();
       $('li.completed').first().remove();
     }
@@ -208,7 +215,7 @@
       for(let i = 0; i<=todos.find('input').length; i++){
         let elem = $('li').get(i);
         let id = jQuery(elem).data('id');
-        todoList[Number(id)].com = true;//tdCollection.updateById(id, {id: id, com:true});
+        todoList[todoList.findIndex((element) => element.id == id)].com = true;//tdCollection.updateById(id, {id: id, com:true});
         window.electronAPI.updateFile(JSON.stringify(todoList))//tdCollection.save();
       }
       window.electronAPI.updateFile(JSON.stringify(todoList))//tdCollection.save();
@@ -218,7 +225,7 @@
       for(let _i = 0; _i<=todos.find('input').length; _i++){
         let _elem = $('li').get(_i);
         let id = jQuery(_elem).data('id');
-        todoList[Number(id)].com = true;//tdCollection.updateById(id, {id: id, com:false});
+        todoList[todoList.findIndex((element) => element.id == id)].com = true;//tdCollection.updateById(id, {id: id, com:false});
         window.electronAPI.updateFile(JSON.stringify(todoList))//tdCollection.save();
       }
       window.electronAPI.updateFile(JSON.stringify(todoList))//tdCollection.save();
@@ -286,13 +293,13 @@
       alert("Wrong input: Deadline time is before current time.");
       return;
     }
+    let pos = todoList.findIndex((element) => element.id == id)
+    //TODO:tdCollection.updateById(id, {id: id, val:val, dl:deadLine.toString()});
+    todoList[pos].id = id;
+    todoList[pos].val = val;
+    todoList[pos].dl = deadLine.toString()
 
-    //tdCollection.updateById(id, {id: id, val:val, dl:deadLine.toString()});
-    todoList[Number(id)].id = id;
-    todoList[Number(id)].val = val;
-    todoList[Number(id)].dl = deadLine.toString()
-
-    if(todoList[Number(id)].com){//tdCollection.findById(id,undefined).com
+    if(todoList[pos].com){//tdCollection.findById(id,undefined).com
       //$('.on').html(template(val, true, tdCollection.find()[tdCollection.find().length-1].id, deadLine.toString()));
       $('.on').html(template(val, true, todoList[todoList.length-1].id, deadLine.toString()));
     }else{
