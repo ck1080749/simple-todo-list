@@ -10,12 +10,17 @@ For bugs or malfunction, please check [Issues](https://github.com/ck1080749/simp
 <!-- ## Download
 
 Check [releases](https://github.com/ck1080749/simple-todo-list/releases) for latest version. -->
+* Add an event
+* Set a deadline to it
+* Notify you when the deadline is reached
+
 
 ## Directions
 ### Download and install
 Go to [releases](https://github.com/ck1080749/simple-todo-list/releases) page, check the latest release with executable installer. Download the version that best suit your operating system.
 
-Note: The latest release is [0.1.0-alpha](https://github.com/ck1080749/simple-todo-list/releases/tag/0.1.0-alpha), whereas the latest release with installer is [0.0.4-indev](https://github.com/ck1080749/simple-todo-list/releases/tag/0.0.4-indev). The next version with installer will be [0.1.1-alpha](#), which will come later.
+Note: Currently no Linux version. I'm still figuring how to pack it into a linux installer.
+<!--Note: The latest release is [0.1.0-alpha](https://github.com/ck1080749/simple-todo-list/releases/tag/0.1.0-alpha), whereas the latest release with installer is [0.0.4-indev](https://github.com/ck1080749/simple-todo-list/releases/tag/0.0.4-indev). The next version with installer will be [0.1.1-alpha](#), which will come later.-->
 ### Interface
 ![介面圖片](/readme-pics/inte.png)
 ### Operations
