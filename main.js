@@ -4,7 +4,16 @@ const path = require('path')
 const fs = require('fs')
 
 async function loadFile(){ //TODO:這樣會有問題嗎
-  const d = fs.readFileSync("./event.json","utf-8")
+  let d
+  try{//讀不到檔案的例外處理
+    d = fs.readFileSync("./event.json","utf-8")
+  }catch{
+    fs.writeFileSync("./event.json","[]")
+    mainWindow.webContents.send('createNewFile', 0)
+  }finally{
+    d = fs.readFileSync("./event.json","utf-8")
+  }
+  
   data = JSON.parse(d)
   //console.log(data)
   //return d//TODO: Maybe here's the probem?
@@ -20,7 +29,7 @@ function createWindow () {
     }
   })
 
-  //globalThis['mainWindow'] = mainWindow
+  globalThis['mainWindow'] = mainWindow
   //console.log("a")
 
   ipcMain.on('write-to-console',(event, text)=>{
@@ -51,13 +60,7 @@ function createWindow () {
 app.whenReady().then(() => {
   
   ipcMain.handle('fileRead', loadFile)
-  createWindow()
-  
-  // ipcMain.on('save-file',(_event, value)=>{
-  //   console.log([1,2,3,45])
-  //   console.log(typeof value)
-  //   mainWindow.destroy()
-  // })
+  createWindow() 
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

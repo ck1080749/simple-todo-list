@@ -1,6 +1,6 @@
 {
   "name": "simple-todo-list",
-  "version": "0.1.1-alpha",
+  "version": "0.1.2-alpha",
   "description": "A simple Electron-based todo-list.",
   "main": "main.js",
   "scripts": {

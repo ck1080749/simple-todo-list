@@ -15,5 +15,6 @@ window.addEventListener('DOMContentLoaded', () => {
 contextBridge.exposeInMainWorld('electronAPI',{
   pushToBackend: (message) => ipcRenderer.send('write-to-console', message),
   updateFile: (dataArray) => ipcRenderer.send('fileUpdate',dataArray),
-  loadFile: () => ipcRenderer.invoke('fileRead')
+  loadFile: () => ipcRenderer.invoke('fileRead'),
+  newFilenotice: (callback) => ipcRenderer.on('createNewFile', callback)
 })

@@ -334,3 +334,7 @@
       }, 1000);
   }
 })();
+
+window.electronAPI.newFilenotice((event, value) => {
+  alert("File not found, creating new file...")
+})
