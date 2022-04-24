@@ -17,6 +17,10 @@
   for(let i=0; i<60; i++){
     $("#minute, #minute1").append('<option value='+i+'>'+i+'</option>');
   }
+  for (let i=1; i<=31;i++){
+    $("#date1").append('<option value='+i+'>'+i+'</option>');
+    $("#date").append('<option value='+i+'>'+i+'</option>');
+  }
 
   function template(val, com, id, dl){
     if(com){//completed
@@ -70,35 +74,35 @@
   $('body').show();
   var ENTER_KEY = 13;
 
-  $("#date").on("click", function(){
-    let nextMonth = Number($("#month").val())+1;
-    let thisYear = Number($("#year").val());
-    $("#date option").remove();
-    $("#date").append('<option value="-1" >Date</option>');
-    if(nextMonth == 0){
-      return;
-    }else{
-      let maxDate = new Date(thisYear, nextMonth, 0);
-      for (let i=1; i<=maxDate.getDate();i++){
-        $("#date").append('<option value='+i+'>'+i+'</option>');
-      }
-    }
-  });
+  // $("#date").on("click", function(){
+  //   let nextMonth = Number($("#month").val())+1;
+  //   let thisYear = Number($("#year").val());
+  //   $("#date option").remove();
+  //   $("#date").append('<option value="-1" >Date</option>');
+  //   if(nextMonth == 0){
+  //     return;
+  //   }else{
+  //     let maxDate = new Date(thisYear, nextMonth, 0);
+  //     for (let i=1; i<=maxDate.getDate();i++){
+  //       $("#date").append('<option value='+i+'>'+i+'</option>');
+  //     }
+  //   }
+  // });
 
-  $("#date1").on("click", function(){
-    let nextMonth = Number($("#month1").val())+1;
-    let thisYear = Number($("#year1").val());
-    $("#date1 option").remove();
-    $("#date1").append('<option value="-1" >Date</option>');
-    if(nextMonth == 0){
-      return;
-    }else{
-      let maxDate = new Date(thisYear, nextMonth, 0);
-      for (let i=1; i<=maxDate.getDate();i++){
-        $("#date1").append('<option value='+i+'>'+i+'</option>');
-      }
-    }
-  });
+  // $("#date1").on("click", function(){
+  //   let nextMonth = Number($("#month1").val())+1;
+  //   let thisYear = Number($("#year1").val());
+  //   $("#date1 option").remove();
+  //   $("#date1").append('<option value="-1" >Date</option>');
+  //   if(nextMonth == 0){
+  //     return;
+  //   }else{
+  //     let maxDate = new Date(thisYear, nextMonth, 0);
+  //     for (let i=1; i<=maxDate.getDate();i++){
+  //       $("#date1").append('<option value='+i+'>'+i+'</option>');
+  //     }
+  //   }
+  // });
 
   $('#new-todo').on('keydown', function(e){//e: pressed key
     if(e.which == ENTER_KEY){
