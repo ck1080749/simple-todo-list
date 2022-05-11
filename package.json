@@ -29,7 +29,7 @@
   "author": "GitHub",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^17.1.2",
+    "electron": "^18.2.2",
     "electron-builder": "^22.14.13",
     "electron-packager": "^15.4.0",
     "grunt": "^1.4.1",
